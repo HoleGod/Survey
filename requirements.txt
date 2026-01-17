@@ -7,3 +7,5 @@ django_select2
 requests
 spotipy
 cryptography>=41.0.4
+pandas
+openpyxl
