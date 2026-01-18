@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-between gap-3">
+
+	<div class="card">
+		<div class="card-body">
+			<h1 class="card-title"><strong>User info</strong></h1>
+
+			<h4 class="card-text">Username: {{ user.username }}</h4>
+			<h4 class="card-text">Email: {{ user.email }}</h4>
+		</div>
+	</div>
+
+	<div class="card flex-grow-1">
+		<div class="card-body">
+			<h1 class="card-title"><strong>Surveys</strong></h1>
+
+			<h4 class="card-subtitle mb-2">Surveys list:</h4>
+
+			<ul class="list-group list-group-flush">
+				{% if surveys %}
+					{% for s in surveys %}
+						<li class="list-group-item">
+							{{ s.title }}
+						</li>
+					{% endfor %}
+				{% else %}
+					<li class="list-group-item text-muted">
+						No surveys created yet
+					</li>
+				{% endif %}
+			</ul>
+		</div>
+	</div>
+
+</div>
+{% endblock content %}

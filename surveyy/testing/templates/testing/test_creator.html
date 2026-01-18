@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+<form action="{% url 'create_test' %}" id="test-form">
+    <label for="test-label">Title: </label>
+    <input type="text" name="label" id="test-label" required />
+    <label for="test-banner">Banner: </label>
+    <input type="file" name="banner" id="test-banner">
+
+    <div id="questionsContainer"></div>
+
+    <button type="button" onclick="addQuestion()">Add Question</button>
+	<button type="submit">Save Test</button>
+</form>
+{% endblock content %}
+
+{% block script %}
+<script>
+let qc = 0;
+
+function addQuestion() {
+qc++;
+
+const container = document.getElementById("questionsContainer");
+const div = document.createElement("div");
+div.className = "question-block"; 
+
+div.innerHTML = `
+<h3>Question ${qc}</h1>
+<input type="text" name="question_${questionCount}_text"  placeholder="Question text" required />
+<select name="question_${questionCount}_type" onchange="changeType(${questionCount}, this.value)">
+    <option value="single">Single choice</option>
+	<option value="multiple">Multiple choice</option>
+</select>
+<div id="answers_${questionCount}">
+    ${answerRow(questionCount, 1, "single")}
+</div>
+<button type="button" onclick="addAnswer(${questionCount})">
+    Add Answer
+</button>
+<hr>
+`;
+
+container.appendChild(div);
+}
+
+function answerRow(qNum, aNum, type) {
+    const inputType = type === "single" ? "radio" : "checkbox";
+
+    return `
+        <div class="answer-row">
+            <input type="${inputType}"
+				   name="question_${qNum}_correct"
+				   value="${aNum}" />
+
+			<input type="text"
+				   name="question_${qNum}_answer_${aNum}"
+				   placeholder="Answer ${aNum}"
+				   required />
+        </div>
+    `;
+}
+
+function changeType(qNum, type) {
+	const container = document.getElementById(`answers_${qNum}`);
+	const answers = container.querySelectorAll(".answer-row");
+
+	container.innerHTML = "";
+	answers.forEach((_, idx) => {
+		container.insertAdjacentHTML(
+			"beforeend",
+			answerRow(qNum, idx + 1, type)
+		);
+	});
+}
+
+function addAnswer(qNum) {
+	const container = document.getElementById(`answers_${qNum}`);
+	const count = container.children.length + 1;
+
+	const typeSelect = document.querySelector(
+		`select[name="question_${qNum}_type"]`
+	);
+
+	container.insertAdjacentHTML(
+		"beforeend",
+		answerRow(qNum, count, typeSelect.value)
+	);
+}
+
+</script>
+{% endblock script %}
