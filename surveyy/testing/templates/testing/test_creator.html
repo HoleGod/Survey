@@ -1,93 +1,89 @@
 {% extends 'base.html' %}
 
-
 {% block content %}
-<form action="{% url 'create_test' %}" id="test-form">
-    <label for="test-label">Title: </label>
-    <input type="text" name="label" id="test-label" required />
-    <label for="test-banner">Banner: </label>
-    <input type="file" name="banner" id="test-banner">
-
+<form action="{% url 'create_test' %}" id="test-form" class="p-1 m-1" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <label for="test-label" class="form-label">Title: </label>
+    <input type="text" class="form-control" name="label" id="test-label" required />
+    <label for="test-banner" class="form-label">Banner: </label>
+    <input type="file" class="form-control" name="banner" id="test-banner">
+    <br>
     <div id="questionsContainer"></div>
 
-    <button type="button" onclick="addQuestion()">Add Question</button>
-	<button type="submit">Save Test</button>
+    <button type="button" onclick="addQuestion()" class="btn btn-md btn-success">Add Question</button>
+    <button type="submit" class="btn btn-md btn-secondary">Save Test</button>
 </form>
 {% endblock content %}
 
 {% block script %}
 <script>
-let qc = 0;
+let questionCount = 0;
 
 function addQuestion() {
-qc++;
+    questionCount++;
 
-const container = document.getElementById("questionsContainer");
-const div = document.createElement("div");
-div.className = "question-block"; 
+    const container = document.getElementById("questionsContainer");
+    const div = document.createElement("div");
+    div.className = "question-block mb-3 p-2 border rounded";
 
-div.innerHTML = `
-<h3>Question ${qc}</h1>
-<input type="text" name="question_${questionCount}_text"  placeholder="Question text" required />
-<select name="question_${questionCount}_type" onchange="changeType(${questionCount}, this.value)">
-    <option value="single">Single choice</option>
-	<option value="multiple">Multiple choice</option>
-</select>
-<div id="answers_${questionCount}">
-    ${answerRow(questionCount, 1, "single")}
-</div>
-<button type="button" onclick="addAnswer(${questionCount})">
-    Add Answer
-</button>
-<hr>
-`;
+    div.innerHTML = `
+        <h3>Question ${questionCount}</h3>
+        <input type="text" class="form-control mb-2" name="question_${questionCount}_text" placeholder="Question text" required />
+        <select class="form-select mb-2" name="question_${questionCount}_type" onchange="changeType(${questionCount}, this.value)">
+            <option value="single">Single choice</option>
+            <option value="multiple">Multiple choice</option>
+        </select>
+        <div id="answers_${questionCount}">
+            ${answerRow(questionCount, 1, "single")}
+        </div>
+        <button type="button" onclick="addAnswer(${questionCount})" class="btn btn-sm btn-success mb-2">
+            Add Answer
+        </button>
+    `;
 
-container.appendChild(div);
+    container.appendChild(div);
 }
 
 function answerRow(qNum, aNum, type) {
     const inputType = type === "single" ? "radio" : "checkbox";
 
     return `
-        <div class="answer-row">
+        <div class="answer-row mb-2 d-flex align-items-center gap-2">
             <input type="${inputType}"
-				   name="question_${qNum}_correct"
-				   value="${aNum}" />
-
-			<input type="text"
-				   name="question_${qNum}_answer_${aNum}"
-				   placeholder="Answer ${aNum}"
-				   required />
+                   name="question_${qNum}_correct"
+                   value="${aNum}" class="form-check-input" />
+            <input type="text"
+                   class="form-control"
+                   name="question_${qNum}_answer_${aNum}"
+                   placeholder="Answer ${aNum}"
+                   required />
         </div>
     `;
 }
 
 function changeType(qNum, type) {
-	const container = document.getElementById(`answers_${qNum}`);
-	const answers = container.querySelectorAll(".answer-row");
+    const container = document.getElementById(`answers_${qNum}`);
+    const answers = container.querySelectorAll(".answer-row");
 
-	container.innerHTML = "";
-	answers.forEach((_, idx) => {
-		container.insertAdjacentHTML(
-			"beforeend",
-			answerRow(qNum, idx + 1, type)
-		);
-	});
+    container.innerHTML = "";
+    answers.forEach((_, idx) => {
+        container.insertAdjacentHTML(
+            "beforeend",
+            answerRow(qNum, idx + 1, type)
+        );
+    });
 }
 
 function addAnswer(qNum) {
-	const container = document.getElementById(`answers_${qNum}`);
-	const count = container.children.length + 1;
+    const container = document.getElementById(`answers_${qNum}`);
+    const count = container.children.length + 1;
 
-	const typeSelect = document.querySelector(
-		`select[name="question_${qNum}_type"]`
-	);
+    const typeSelect = document.querySelector(`select[name="question_${qNum}_type"]`);
 
-	container.insertAdjacentHTML(
-		"beforeend",
-		answerRow(qNum, count, typeSelect.value)
-	);
+    container.insertAdjacentHTML(
+        "beforeend",
+        answerRow(qNum, count, typeSelect.value)
+    );
 }
-
 </script>
 {% endblock script %}

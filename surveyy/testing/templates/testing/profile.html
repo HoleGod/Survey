@@ -10,6 +10,9 @@
 			<h4 class="card-text">Username: {{ user.username }}</h4>
 			<h4 class="card-text">Email: {{ user.email }}</h4>
 		</div>
+		<div class="card-footer">
+			<a href="{% url 'create_test_page' %}">Add new test!</a>
+		</div>
 	</div>
 
 	<div class="card flex-grow-1">

@@ -20,7 +20,7 @@ class Question(models.Model):
     points = models.IntegerField(default=1)
     image = models.ImageField(upload_to="questions/", default="")
     question_type = models.CharField(
-		max_length=10,
+		max_length=40,
 		choices=QUESTION_TYPES,
 		default=SINGLE,
 	)
