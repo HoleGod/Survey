@@ -45,7 +45,21 @@ def profile(request):
     return render(request, "testing/profile.html", {"user": user, "surveys": surveys})
 
 @login_required
-def runtest(request):
+def runtest(request, id: int):
+    test = Test.objects.get(id=id)
+    questions = test.questions.prefetch_related('answers')
+    
+    return render(
+        request,
+        "testing/test_page.html",
+        {
+            'test': test,
+            "questions": questions,
+        }
+    )
+    
+@login_required
+def sent_test(request):
     ...
     
 @login_required
@@ -99,4 +113,3 @@ def create_test(request):
 @login_required
 def create_test_page(request):
     return render(request, "testing/test_creator.html")
-    
