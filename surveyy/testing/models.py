@@ -11,14 +11,17 @@ QUESTION_TYPES = [
 
 class Test(models.Model):
     title = models.CharField(max_length=300)
-    image = models.ImageField(upload_to="banners/", default="")
+    image = models.ImageField(upload_to="banners/", blank=True, null=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="created_tests")
+    
+    def get_points(self):
+        return self.questions.count()
     
 class Question(models.Model):
     test = models.ForeignKey(Test, on_delete=models.CASCADE, related_name="questions")
     text = models.CharField(max_length=400)
     points = models.IntegerField(default=1)
-    image = models.ImageField(upload_to="questions/", default="")
+    image = models.ImageField(upload_to="questions/", blank=True, null=True)
     question_type = models.CharField(
 		max_length=40,
 		choices=QUESTION_TYPES,

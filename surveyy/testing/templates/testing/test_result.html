@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load extras %}
+{% block content %}
+
+<h2>{{ user_test.test.title }}</h2>
+<p><strong>Score:</strong> {{ total }} / {{ test.get_points }}</p>
+
+{% for q in questions %}
+<div class="mb-4 p-3 border rounded">
+    <div class="d-flex justify-content-between">
+        <h5>{{ q.text }}</h5>
+        <span >{{ q.points }} p</span>
+    </div>
+    {% for a in q.answers.all %}
+    <div class="form-check rounded p-2 mb-1
+            {% if a.id|stringformat:'s' in user_answers|dict_get:q.id %}
+                {% if a.is_correct %}
+                    bg-success text-white
+                {% else %}
+                    bg-danger text-white
+                {% endif %}
+            {% endif %}">
+        <label class="form-check-label">
+            {{ a.text }}
+        </label>
+    </div>
+    {% endfor %}
+</div>
+{% endfor %}
+
+{% endblock %}
