@@ -1,9 +1,11 @@
 from django.shortcuts import render, redirect
+from django.http import FileResponse, Http404
 from django.contrib.auth.decorators import login_required
 from .models import Test, Answer, Question, UserTest, UserAnswer
 import re
 from .utils import compare_data
 from typing import List
+from .services.exel_export import export_exel
 
 @login_required
 def runtest(request, id: int):
@@ -116,3 +118,18 @@ def create_test(request):
 @login_required
 def create_test_page(request):
     return render(request, "testing/test_creator.html")
+
+@login_required
+def get_file_exel(request, test_id: int):
+    test = Test.objects.get(id=test_id)
+    
+    file_path = export_exel(test=test)
+    
+    if not file_path:
+        raise Http404("File not found")
+    
+    return FileResponse(
+		open(file_path, "rb"),
+		as_attachment=True,
+		filename=file_path.name
+	)
