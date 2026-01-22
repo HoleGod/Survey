@@ -6,6 +6,7 @@ import re
 from .utils import compare_data
 from typing import List
 from .services.exel_export import export_exel
+from django.db import transaction
 
 @login_required
 def runtest(request, id: int):
@@ -47,7 +48,8 @@ def sent_test(request):
         answer_dict[q_id] = answer_ids
         
         itn = compare_data(correct_dict, answer_dict)
-        total = len(itn)
+        total += len(itn)
+
         
     context = {
         "user_answers": answer_dict,
@@ -133,3 +135,34 @@ def get_file_exel(request, test_id: int):
 		as_attachment=True,
 		filename=file_path.name
 	)
+    
+@login_required
+def load_edit(request, test_id: int):
+    test = Test.objects.get(id=test_id)
+    return render(request, "testing/test_editing.html", {"test": test})
+
+@transaction.atomic
+@login_required
+def edit(request, test_id: int):
+    if request.method == "POST":
+        test = Test.objects.get(id=test_id)
+        test.title = request.POST.get('label')
+        if 'banner' in request.FILES:
+            test.banner = request.FILES.get('banner')
+        
+        test.save()
+        for q in test.questions.all():
+            text = request.POST.get(f'question_{ q.id }_text')
+            print(f"q - text = {text}")
+            if text:
+                q.text = text
+                q.save()
+                
+            for a in q.answers.all():
+                a_text = request.POST.get(f'question_{ q.id }_answer_{ a.id }')
+                print(f"a - text = {a_text}")
+                if a_text:
+                    a.text = a_text
+                    a.save()
+                    
+    return redirect('profile')

@@ -27,6 +27,7 @@
 						<li class="list-group-item">
 							<a href="http://127.0.0.1:8000/testing/{{ s.id }}">{{ s.title }}</a>
 							<a href="{% url 'exel' s.id %}">Export exel file!</a>
+							<a href="{% url 'load_edit' s.id %}">Edit</a>
 						</li>
 					{% endfor %}
 				{% else %}
