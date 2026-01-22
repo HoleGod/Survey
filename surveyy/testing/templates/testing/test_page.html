@@ -29,6 +29,9 @@
             <h1 class="form-label">{{ q.text }}</h1>
             <p class="text-muted">{{ q.points }}*</p>
         </div>
+        {% if q.image %}
+            <img src="{{ q.image.url }}" alt="question image">
+        {% endif %}
         {% for a in q.answers.all %}
             <div class="form-check">
                 <input class="form-check-input"

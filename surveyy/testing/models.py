@@ -15,7 +15,10 @@ class Test(models.Model):
 	author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="created_tests")
 	
 	def get_points(self):
-		return self.questions.count()
+		total = 0
+		for q in self.questions.all():
+			total += q.points
+		return total
 	
 class Question(models.Model):
 	test = models.ForeignKey(Test, on_delete=models.CASCADE, related_name="questions")

@@ -47,9 +47,8 @@ def sent_test(request):
         user_answer.selected_answers.set(answer_ids)
         answer_dict[q_id] = answer_ids
         
-        itn = compare_data(correct_dict, answer_dict)
-        total += len(itn)
-
+        if set(answer_ids) == set(correct_dict[q_id]):
+            total += question.points
         
     context = {
         "user_answers": answer_dict,
@@ -84,11 +83,15 @@ def create_test(request):
         for q_num in questions_nums:
             text = request.POST.get(f"question_{q_num}_text")
             type = request.POST.get(f"question_{q_num}_type")
-
+            points = request.POST.get(f"question_{q_num}_points")
+            image = request.FILES.get(f"question_{q_num}_image")
+            
             question = Question.objects.create(
                 test=test,
                 text=text,
                 question_type=type,
+                points=points,
+                image=image,
             )
 
             a_num = 1
@@ -153,9 +156,13 @@ def edit(request, test_id: int):
         test.save()
         for q in test.questions.all():
             text = request.POST.get(f'question_{ q.id }_text')
+            image = request.FILES.get(f'question_{ q.id }_image')
             print(f"q - text = {text}")
+            print(f"q - image = {image}")
             if text:
                 q.text = text
+                if image:
+                    q.image = image
                 q.save()
                 
             for a in q.answers.all():

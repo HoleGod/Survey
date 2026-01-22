@@ -28,9 +28,16 @@
     <div id="questionsContainer">
         {% for q in test.questions.all %}
         <div class="mb-4 border p-3">
-            <input type="hidden" name="q.id" value="{{ q.id }}">
+            {#<input type="hidden" name="q.id" value="{{ q.id }}">#}
             <input type="text" class="form-control mb-2" value="{{ q.text }}" name="question_{{ q.id }}_text" required>
-
+            
+            {% if q.image %}
+            <div class="mb-2">
+                <img src="{{ q.image.url }}" alt="Current question image" style="max-width:200px;">
+            </div>
+            {% endif %}
+            <input type="file" class="form-control mb-2" name="question_{{ q.id }}_image">
+            
             <div id="answersContainer_{{ q.id }}">
                 {% for a in q.answers.all %}
                 <div class="answer-row mb-2 d-flex align-items-center gap-2">

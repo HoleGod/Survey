@@ -9,7 +9,6 @@
     <input type="file" class="form-control" name="banner" id="test-banner">
     <br>
     <div id="questionsContainer"></div>
-
     <button type="button" onclick="addQuestion()" class="btn btn-md btn-success">Add Question</button>
     <button type="submit" class="btn btn-md btn-secondary">Save Test</button>
 </form>
@@ -29,9 +28,18 @@
         div.innerHTML = `
         <h3>Question ${questionCount}</h3>
         <input type="text" 
-        class="form-control 
-        mb-2" name="question_${questionCount}_text" 
+        class="form-control mb-2" 
+        name="question_${questionCount}_text" 
         placeholder="Question text" required />
+        <input type="number" 
+        class="form-control mb-2" 
+        name="question_${questionCount}_points" 
+        placeholder="Question points" required />
+        <input type="file"
+        class="form-control mb-2" 
+        name="question_${questionCount}_type" 
+        name="question_${questionCount}_image"
+        placeholder="Question image" />
         <select class="form-select mb-2" 
         name="question_${questionCount}_type" 
         onchange="changeType(${questionCount}, this.value)">
