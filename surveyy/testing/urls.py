@@ -1,5 +1,5 @@
 from django.urls import path
-from testing import views, test_views
+from testing import views, test_views, search_views
 urlpatterns = [
     path("", views.index, name="index"),
     path("login/", views.user_login, name="login"),
@@ -13,4 +13,6 @@ urlpatterns = [
     path("export_exel/<int:test_id>/", test_views.get_file_exel, name="exel"),
     path("editing/<int:test_id>/", test_views.load_edit, name="load_edit"),
     path("sent_edited/<int:test_id>/", test_views.edit, name="edit"),
+    path("search/", search_views.search, name="search"),
+    path("search_ajax/", search_views.search_ajax, name="search_ajax"),
 ]
