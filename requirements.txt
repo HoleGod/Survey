@@ -9,3 +9,4 @@ spotipy
 cryptography>=41.0.4
 pandas
 openpyxl
+pillow

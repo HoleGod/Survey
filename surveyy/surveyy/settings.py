@@ -122,3 +122,15 @@ MEDIA_URL = "media/"
 MEDIA_ROOT = BASE_DIR / MEDIA_URL
 
 LOGIN_URL = "login"
+
+ALLOWED_HOSTS = [
+    "localhost",
+    "127.0.0.1",
+    ".ngrok-free.dev",
+    ".ngrok-free.app",
+    "entomological-melony-undividedly.ngrok-free.dev",
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://entomological-melony-undividedly.ngrok-free.dev",
+]

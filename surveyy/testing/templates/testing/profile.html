@@ -23,13 +23,25 @@
 
 			<ul class="list-group list-group-flush">
 				{% if surveys %}
-					{% for s in surveys %}
-						<li class="list-group-item">
-							<a href="http://127.0.0.1:8000/testing/{{ s.id }}">{{ s.title }}</a>
-							<a href="{% url 'exel' s.id %}">Export exel file!</a>
-							<a href="{% url 'load_edit' s.id %}">Edit</a>
-						</li>
-					{% endfor %}
+					
+						<table class="table">
+						<thead>
+							<tr>
+								<th>Title</th>
+								<th>Export</th>
+								<th>Editing</th>
+							</tr>
+						</thead>
+						<tbody>
+						{% for s in surveys %}
+							<tr>
+								<td><a href="http://127.0.0.1:8000/testing/{{ s.id }}" class="text-decoration-none text-dark">{{ s.title }}</a></td>
+								<td><a href="{% url 'exel' s.id %}" class="text-decoration-none text-dark">Export exel file!</a></td>
+								<td><a href="{% url 'load_edit' s.id %}" class="text-decoration-none text-dark">Edit</a></td>
+							</tr>
+						{% endfor %}
+						</tbody>
+						</table>
 				{% else %}
 					<li class="list-group-item text-muted">
 						No surveys created yet

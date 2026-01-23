@@ -7,18 +7,24 @@ from .utils import compare_data
 from typing import List
 from .services.exel_export import export_exel
 from django.db import transaction
+from django.core.paginator import Paginator
 
 @login_required
 def runtest(request, id: int):
     test = Test.objects.get(id=id)
     questions = test.questions.prefetch_related("answers")
-
+    
+    paginator = Paginator(questions, 1)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+    
     return render(
         request,
         "testing/test_page.html",
         {
             "test": test,
             "questions": questions,
+            "page_obj": page_obj,
         },
     )
 
@@ -151,7 +157,9 @@ def edit(request, test_id: int):
         test = Test.objects.get(id=test_id)
         test.title = request.POST.get('label')
         if 'banner' in request.FILES:
-            test.banner = request.FILES.get('banner')
+            test.image = request.FILES.get('banner')
+            
+        print(f"t_test = {test.title}\nt_banner = {test.image.url}")
         
         test.save()
         for q in test.questions.all():

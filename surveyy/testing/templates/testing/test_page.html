@@ -3,51 +3,50 @@
 {% block content %}
 
 {% if test.image %}
-<div class="border-1" style="
-		background-image: url('{{ test.image.url }}');
-		width: 100%;
-		height: 150px;
-		background-repeat: no-repeat;
-		background-size: cover;
-	">
-    <h1>{{ test.title }}</h1>
+<div class="border rounded-1 d-flex align-items-center justify-content-center mb-3" 
+     style="width:100%; height:150px; 
+            background-image: url('{{ test.image.url }}');
+            background-size: cover;
+            background-position: center;">
+    <h1 class="m-0 text-white">{{ test.title }}</h1>
 </div>
 {% else %}
-<div class="border-1 p-4">
-    <h1>{{ test.title }}</h1>
+<div class="border rounded-1 p-4 mb-3">
+    <h1 class="text-center">{{ test.title }}</h1>
 </div>
 {% endif %}
-
 <form action="{% url 'sent_test' %}" method="post" class="mt-2">
     {% csrf_token %}
     <input type="hidden" name="test_id" value="{{ test.id }}">
 
     {% for q in questions %}
-    <div class="mb-4 p-3 border rounded">
-        <div class="d-flex justify-content-between">
-            <input type="hidden" name="q_id" value="{{ q.id }}">
-            <h1 class="form-label">{{ q.text }}</h1>
-            <p class="text-muted">{{ q.points }}*</p>
-        </div>
-        {% if q.image %}
-            <img src="{{ q.image.url }}" alt="question image">
-        {% endif %}
-        {% for a in q.answers.all %}
-            <div class="form-check">
-                <input class="form-check-input"
-                type="{% if q.question_type == 'single' %}radio{% else %}checkbox{% endif %}"
-                name="question_{{ q.id }}{% if q.type == 'multiple' %}[]{% endif %}"
-                value="{{ a.id }}"
-                id="answer_{{ a.id }}"
-                {% if q.question_type  == 'single' %}required{% endif %}
-                >
-                <label class="form-check-label" for="answer_{{ a.id }}">
-                {{ a.text }}
-            </label>
+    <div class="card mb-4 p-3 border rounded">
+        <input type="hidden" name="q_id" value="{{ q.id }}">
+        <div class="d-flex justify-content-between align-items-start">
+            <div style="flex: 1; margin-right: 15px;">
+                <h3 class="form-label">{{ q.text }}</h3>
+                {% for a in q.answers.all %}
+                <div class="form-check d-flex align-items-center p-2">
+                    <input class="form-check-input ms-1"
+                           type="{% if q.question_type == 'single' %}radio{% else %}checkbox{% endif %}"
+                           name="question_{{ q.id }}{% if q.type == 'multiple' %}[]{% endif %}"
+                           value="{{ a.id }}"
+                           id="answer_{{ a.id }}"
+                           {% if q.question_type  == 'single' %}required{% endif %}>
+                    <label class="form-check-label fs-4 ms-1" for="answer_{{ a.id }}">
+                        {{ a.text }}
+                    </label>
+                </div>
+                {% endfor %}
             </div>
-            
-        {% endfor %}
-    </div> 
+            <div style="flex: 0 0 300px;">
+                {% if q.image %}
+                <img src="{{ q.image.url }}" class="rounded-2" alt="question image" style="width: 100%; height: auto;">
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
     {% endfor %}
     <button type="submit" class="btn btn-md btn-success">Sent answers!</button>
 </form>
