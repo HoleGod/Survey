@@ -1,0 +1,17 @@
+name: "survey_app"
+
+services:
+  web:
+    build: .
+    container_name: djangoapp
+    command: python -u manage.py runserver 0.0.0.0:8000
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+      - ./:/survey_app/databases
+      - data:/survey_app/databases/data
+  
+volumes:
+  data:
