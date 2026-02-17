@@ -1,0 +1,83 @@
+
+    let questionCount = 0;
+
+    function addQuestion() {
+        questionCount++;
+
+        const container = document.getElementById("questionsContainer");
+        const div = document.createElement("div");
+        div.className = "question-block mb-3 p-2 border rounded";
+
+        div.innerHTML = `
+        <h3>Question ${questionCount}</h3>
+        <input type="text" 
+        class="form-control mb-2" 
+        name="question_${questionCount}_text" 
+        placeholder="Question text" required />
+        <input type="number" 
+        class="form-control mb-2" 
+        name="question_${questionCount}_points" 
+        placeholder="Question points" required />
+        <input type="file"
+        class="form-control mb-2" 
+        name="question_${questionCount}_type" 
+        name="question_${questionCount}_image"
+        placeholder="Question image" />
+        <select class="form-select mb-2" 
+        name="question_${questionCount}_type" 
+        onchange="changeType(${questionCount}, this.value)">
+            <option value="single">Single choice</option>
+            <option value="multiple">Multiple choice</option>
+        </select>
+        <div id="answers_${questionCount}">
+            ${answerRow(questionCount, 1, "single")}
+        </div>
+        <button type="button" onclick="addAnswer(${questionCount})" class="btn btn-sm btn-success mb-2">
+            Add Answer
+        </button>
+    `;
+
+        container.appendChild(div);
+    }
+
+    function answerRow(qNum, aNum, type) {
+        const inputType = type === "single" ? "radio" : "checkbox";
+
+        return `
+        <div class="answer-row mb-2 d-flex align-items-center gap-2">
+            <input type="${inputType}"
+                   name="question_${qNum}_correct"
+                   value="${aNum}" class="form-check-input" />
+            <input type="text"
+                   class="form-control"
+                   name="question_${qNum}_answer_${aNum}"
+                   placeholder="Answer ${aNum}"
+                   required />
+        </div>
+    `;
+    }
+
+    function changeType(qNum, type) {
+        const container = document.getElementById(`answers_${qNum}`);
+        const answers = container.querySelectorAll(".answer-row");
+
+        container.innerHTML = "";
+        answers.forEach((_, idx) => {
+            container.insertAdjacentHTML(
+                "beforeend",
+                answerRow(qNum, idx + 1, type)
+            );
+        });
+    }
+
+    function addAnswer(qNum) {
+        const container = document.getElementById(`answers_${qNum}`);
+        const count = container.children.length + 1;
+
+        const typeSelect = document.querySelector(`select[name="question_${qNum}_type"]`);
+
+        container.insertAdjacentHTML(
+            "beforeend",
+            answerRow(qNum, count, typeSelect.value)
+        );
+    }
